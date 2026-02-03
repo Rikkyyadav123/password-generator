@@ -1,8 +1,31 @@
-import { useState } from 'react'
+import {useCallback, useEffect, useState } from 'react'
 // import './App.css'
 
 function App() {
  const [length,setlength] = useState(8)
+ const [numberallowed,setnumberallowed] = useState(false)
+ const [characterallowed,setcharacterallowed] =useState(false)
+ const [password,setpassword] = useState('')
+
+  const generatePassword = useCallback(()=>{
+     let pass =""
+     let str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+     if(numberallowed){
+      str+="0123456789"
+     }
+     if(characterallowed){
+       str+="!@#$%^&*()_+{}|:<>?-=[];',./`~" 
+     }
+         for( let i=1;i<=length;i++){
+           let char = Math.floor(Math.random()*str.length+1)
+           pass+=str.charAt(char)
+         }
+         setpassword(pass)
+    },[characterallowed,length,numberallowed])
+   useEffect(()=>{ generatePassword()
+},[length,numberallowed,characterallowed,generatePassword])
+
+   
 
   return (
     
@@ -17,8 +40,9 @@ function App() {
     <div className="flex gap-2">
       <input
         type="text"
-        placeholder="Password"
+        placeholder= "Password"
         readOnly
+        value={password}
         className="flex-1 px-3 py-2 rounded-lg bg-gray-700 text-white outline-none focus:ring-2 focus:ring-indigo-400"
       />
       <button className="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 rounded-lg font-semibold transition">
@@ -45,6 +69,7 @@ function App() {
           <input
             type="checkbox"
             className="w-4 h-4 accent-indigo-500"
+            onClick={()=>setnumberallowed(!numberallowed)}
           />
           Numbers
         </label>
@@ -53,8 +78,9 @@ function App() {
           <input
             type="checkbox"
             className="w-4 h-4 accent-indigo-500"
+            onClick={() => setcharacterallowed(!characterallowed)}
           />
-          Alphabets
+          Characters
         </label>
 
       </div>
